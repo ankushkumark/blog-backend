@@ -10,7 +10,7 @@ exports.createPost = async (req, res) => {
     const post = new Post({
       title: req.body.title,
       content: req.body.content,
-      image: req.body.image || null,  // ✅ frontend se aayega Cloudinary ka URL
+      image: req.body.image || null,  
       author: req.user.id,
     });
 
@@ -36,8 +36,8 @@ exports.getPosts = async (req, res) => {
 exports.getPost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id)
-      .populate("author", "name email")              // ✅ Post ka author
-      .populate("comments.user", "name email");      // ✅ Har comment ka user bhi populate hoga
+      .populate("author", "name email")              
+      .populate("comments.user", "name email");      
 
     if (!post) return res.status(404).json({ msg: "Post not found" });
 
@@ -62,7 +62,7 @@ exports.updatePost = async (req, res) => {
 
     await post.save();
 
-    // ✅ Author + comments populate karo
+    // ✅ Author + comments populate 
     post = await Post.findById(post._id)
       .populate("author", "name email")
       .populate("comments.user", "name email");
@@ -100,12 +100,10 @@ exports.reactToPost = async (req, res) => {
 
     if (!post) return res.status(404).json({ msg: "Post not found" });
 
-    // Purane reaction ko hatao agar exist karta hai
     post.likes = post.likes.filter(
       (like) => like.user.toString() !== req.user.id
     );
 
-    // Agar user ne reaction diya hai toh push karo
     if (type) {
       post.likes.push({ user: req.user.id, type });
     }
